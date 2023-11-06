@@ -131,7 +131,7 @@ void scaffoldControlLogic()
 
   //left middle, move left
   text("left", 830, 715);
-  if (mousePressed && dist(830, 715, mouseX, mouseY)<inchToPix(.6f))
+  if (mousePressed && dist(830, 715, mouseX, mouseY)<inchToPix(.5f))
     logoX-=inchToPix(.02f);
 
   text("right", width-inchToPix(.4f), 715);
@@ -139,12 +139,14 @@ void scaffoldControlLogic()
     logoX+=inchToPix(.02f);
 
   text("UP", 905, 660);
-  if (mousePressed && dist(905, 660, mouseX, mouseY)<inchToPix(.6f))
+  if (mousePressed && dist(905, 660, mouseX, mouseY)<inchToPix(.5f))
     logoY-=inchToPix(.02f);
 
   text("DOWN", 905, height-inchToPix(.4f));
   if (mousePressed && dist(905, height-inchToPix(.4f), mouseX, mouseY)<inchToPix(.5f))
     logoY+=inchToPix(.02f);
+    
+   text("Enter", 905, 715);
 }
 
 void mousePressed()
@@ -159,7 +161,7 @@ void mousePressed()
 void mouseReleased()
 {
   //check to see if user clicked middle of screen within 3 inches, which this code uses as a submit button
-  if (dist(width/2, height/2, mouseX, mouseY)<inchToPix(3f))
+  if (dist(905, 715, mouseX, mouseY)<inchToPix(.5f))
   {
     if (userDone==false && !checkForSuccess())
       errorCount++;
