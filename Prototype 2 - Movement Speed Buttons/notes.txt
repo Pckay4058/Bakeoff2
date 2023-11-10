@@ -1,0 +1,5 @@
+different than prototype 1?
+
+added speed adjustment buttons
+reset square to center of screen after each attempt -- along with movement speed
+changed from highlighting the next square to only showing the next square to prevent distraction
