@@ -33,6 +33,7 @@ ArrayList<Destination> destinations = new ArrayList<Destination>();
 
 
 float movementSpeed; // used to control speed that the square moves
+// used to locate target square for button click on success feature
 float targetSquareX;
 float targetSquareY;
 
