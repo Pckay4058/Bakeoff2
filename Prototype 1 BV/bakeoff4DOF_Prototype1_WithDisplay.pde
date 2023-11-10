@@ -238,7 +238,7 @@ float inchToPix(float inch)
 /* Function: displayText
  * Paremeters: None
  * Return: None
- * This function draws the trial text, cordinate text of active square, and cordinate text of cursor square to the screen. If the cursor square is in a success state, the color changes to yellow to indicate to the user it is safe to click
+ * This function draws the trial text, coordinate text of active square, and coordinate text of cursor square to the screen. If the cursor square is in a success state, the color changes to yellow to indicate to the user it is safe to click
 */
 void displayText()
 {
@@ -247,7 +247,7 @@ void displayText()
   
   textSize(15); // init to 15px
   
-  // ===== TARGET CORDINATES =====
+  // ===== TARGET COORDINATES =====
   if(checkForSuccess())
     fill(255, 255, 0); // yellow
   else
@@ -257,7 +257,7 @@ void displayText()
   text("X " + d.x + ", Y " + d.y + ", R "+ d.rotation + ", Z "+ d.z, width/5, inchToPix(.4f));
   
   
-  // ===== CURRENT CORDINATES =====
+  // ===== CURRENT COORDINATES =====
   if(!checkForSuccess())
     fill(255); // reset  
     
