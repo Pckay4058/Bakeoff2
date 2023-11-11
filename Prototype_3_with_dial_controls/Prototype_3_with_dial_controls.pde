@@ -31,6 +31,12 @@ private class Destination
 
 ArrayList<Destination> destinations = new ArrayList<Destination>();
 
+
+float movementSpeed; // used to control speed that the square moves
+// used to locate target square for button click on success feature
+float targetSquareX;
+float targetSquareY;
+
 void setup() {
   size(1000, 800);  
   rectMode(CENTER);
@@ -54,6 +60,7 @@ void setup() {
   }
 
   Collections.shuffle(destinations); // randomize the order of the button; don't change this.
+  movementSpeed = 1; // init movement speed to default
 }
 
 
@@ -84,10 +91,19 @@ void draw() {
     noFill();
     strokeWeight(3f);
     if (trialIndex==i)
+    {
       stroke(255, 0, 0, 192); //set color to semi translucent
-    else
+      rect(0, 0, d.z, d.z);
+      targetSquareX = d.x;
+      targetSquareY = d.y;
+    }
+    else if (trialIndex+1==i && i+1 <= trialCount) // highlight next square !!!
+    {
+      //stroke(0, 255, 0, 192); -- green highlight used in prototype 1
       stroke(128, 128, 128, 128); //set color to semi translucent
-    rect(0, 0, d.z, d.z);
+      rect(0, 0, d.z, d.z);
+    }
+    
     popMatrix();
   }
 
@@ -96,19 +112,25 @@ void draw() {
   translate(logoX, logoY); //translate draw center to the center oft he logo square
   rotate(radians(logoRotation)); //rotate using the logo square as the origin
   noStroke();
-  fill(60, 60, 192, 192);
+  if(checkForSuccess()) // change color of square on success
+  {
+    fill(255, 255, 0, 192);
+  }
+  else
+  {
+   fill(60, 60, 192, 192); 
+  }
   rect(0, 0, logoZ, logoZ);
   popMatrix();
 
   //===========DRAW EXAMPLE CONTROLS=================
   fill(255);
   scaffoldControlLogic(); //you are going to want to replace this!
-  text("Trial " + (trialIndex+1) + " of " +trialCount, width/2, inchToPix(.4f));
-  text("Current Coordinates: X " + logoX + ", Y " + logoY + ", R "+ logoRotation + ", Z "+ logoZ, width/2, inchToPix(.8f));
-  Destination d = destinations.get(trialIndex);
-  
-  text("Target Coordinates: X " + d.x + ", Y " + d.y + ", R "+ d.rotation + ", Z "+ d.z, width/2, 85);
+  displayText();
 }
+
+
+
 
 //my example design for control, which is terrible
 void scaffoldControlLogic()
@@ -116,42 +138,45 @@ void scaffoldControlLogic()
   //upper left corner, rotate counterclockwise
   text("CCW", 830, 660);
   if (mousePressed && dist(830, 660, mouseX, mouseY)<inchToPix(.5f))
-    logoRotation--;
+    logoRotation = logoRotation - 1 * movementSpeed;
 
   //upper right corner, rotate clockwise
   text("CW", width-30, 660);
   if (mousePressed && dist(width-30, 660, mouseX, mouseY)<inchToPix(.5f))
-    logoRotation++;
+    logoRotation = logoRotation + 1 * movementSpeed;
 
   //lower left corner, decrease Z
   text("-", 830, height-inchToPix(.4f));
   if (mousePressed && dist(830, height-inchToPix(.4f), mouseX, mouseY)<inchToPix(.5f))
-    logoZ = constrain(logoZ-inchToPix(.02f), .01, inchToPix(4f)); //leave min and max alone!
+    logoZ = constrain(logoZ-inchToPix(.02f) * movementSpeed, .01, inchToPix(4f)); //leave min and max alone!
 
   //lower right corner, increase Z
   text("+", width-inchToPix(.4f), height-inchToPix(.4f));
   if (mousePressed && dist(width-inchToPix(.4f), height-inchToPix(.4f), mouseX, mouseY)<inchToPix(.5f))
-    logoZ = constrain(logoZ+inchToPix(.02f), .01, inchToPix(4f)); //leave min and max alone! 
+    logoZ = constrain(logoZ+inchToPix(.02f) * movementSpeed, .01, inchToPix(4f)); //leave min and max alone! 
 
   //left middle, move left
   text("left", 830, 715);
   if (mousePressed && dist(830, 715, mouseX, mouseY)<inchToPix(.5f))
-    logoX-=inchToPix(.02f);
+    logoX = logoX - inchToPix(.02f) * movementSpeed;
 
   text("right", width-inchToPix(.4f), 715);
   if (mousePressed && dist(width-inchToPix(.4f), 715, mouseX, mouseY)<inchToPix(.5f))
-    logoX+=inchToPix(.02f);
+    logoX = logoX + inchToPix(.02f) * movementSpeed;
 
   text("UP", 905, 660);
   if (mousePressed && dist(905, 660, mouseX, mouseY)<inchToPix(.5f))
-    logoY-=inchToPix(.02f);
+    logoY = logoY - inchToPix(.02f) * movementSpeed;
 
   text("DOWN", 905, height-inchToPix(.4f));
   if (mousePressed && dist(905, height-inchToPix(.4f), mouseX, mouseY)<inchToPix(.5f))
-    logoY+=inchToPix(.02f);
+    logoY = logoY + inchToPix(.02f) * movementSpeed;
     
    text("Enter", 905, 715);
 }
+
+
+
 
 void mousePressed()
 {
@@ -160,12 +185,40 @@ void mousePressed()
     startTime = millis();
     println("time started!");
   }
+  
+  // check for mouse clicks on the decrease movement speed button
+  if(mouseX > width/1.25 - 60 && mouseX < width/1.25 - 20 && mouseY > inchToPix(.8f) - 20 && mouseY < inchToPix(.8f) + 20)
+    if(movementSpeed - 0.25 > 0)
+      movementSpeed -= 0.25;
+      
+  // check for mouse clicks on the increase movement speed button
+  if(mouseX > width/1.25 + 20 && mouseX < width/1.25 + 60 && mouseY > inchToPix(.8f) - 20 && mouseY < inchToPix(.8f) + 20)
+    if(movementSpeed + 0.25 <= 3)
+      movementSpeed += 0.25;
+
 }
+
+
+
 
 void mouseReleased()
 {
+  // ensures trialIndex will always stay within bounds of the list
+  if(trialIndex == trialCount)
+    return;
+  
+  boolean check = false;
   //check to see if user clicked middle of screen within 3 inches, which this code uses as a submit button
   if (dist(905, 715, mouseX, mouseY)<inchToPix(.5f))
+    check = true;
+  
+  
+  // check if clicked within the button
+  if(checkForSuccess())
+    if(dist(targetSquareX, targetSquareY, mouseX, mouseY)<inchToPix(.5f))
+      check = true;
+  
+  if(check)
   {
     if (userDone==false && !checkForSuccess())
       errorCount++;
@@ -177,8 +230,18 @@ void mouseReleased()
       userDone = true;
       finishTime = millis();
     }
+    
+    // reset location, rotation, and movement speed
+    logoX = 500;
+    logoY = 500;
+    logoZ = 50f;
+    logoRotation = 0;
+    movementSpeed = 1;
   }
 }
+
+
+
 
 //probably shouldn't modify this, but email me if you want to for some good reason.
 public boolean checkForSuccess()
@@ -196,6 +259,9 @@ public boolean checkForSuccess()
   return closeDist && closeRotation && closeZ;
 }
 
+
+
+
 //utility function I include to calc diference between two angles
 double calculateDifferenceBetweenAngles(float a1, float a2)
 {
@@ -207,8 +273,56 @@ double calculateDifferenceBetweenAngles(float a1, float a2)
     return diff;
 }
 
+
+
+
 //utility function to convert inches into pixels based on screen PPI
 float inchToPix(float inch)
 {
   return inch*screenPPI;
+}
+
+
+
+/* Function: displayText
+ * Paremeters: None
+ * Return: None
+ * This function draws the trial text, movement speed text and buttons, coordinate text of active square, and coordinate text of cursor square to the screen. If the cursor square is in a success state, the color changes to yellow to indicate to the user it is safe to click
+*/
+void displayText()
+{
+  // ===== TRIAL TEXT =====
+  text("Trial " + (trialIndex+1) + " of " +trialCount, width/2, inchToPix(.8f));
+  
+  
+  // ===== MOVEMENT SPEED TEXT AND BUTTONS =====
+  text("-", width/1.25 - 50, inchToPix(.8f));
+  text("Speed", width/1.25, inchToPix(.8f));
+  text("+", width/1.25 + 50, inchToPix(.8f));
+  text(nf(movementSpeed, 0, 2), width/1.25 + 100, inchToPix(.8f));
+  
+  
+  textSize(15); // init to 15px
+  
+  // ===== TARGET COORDINATES =====
+  if(checkForSuccess())
+    fill(255, 255, 0); // yellow
+  else
+    fill(173, 216, 230); // light blue
+  
+  Destination d = destinations.get(trialIndex);
+  text("X " + d.x + ", Y " + d.y + ", R "+ d.rotation + ", Z "+ d.z, width/5, inchToPix(.4f));
+  
+  
+  // ===== CURRENT COORDINATES =====
+  if(!checkForSuccess())
+    fill(255); // reset  
+    
+  text("X " + logoX + ", Y " + logoY + ", R "+ logoRotation + ", Z "+ logoZ, width/5, inchToPix(.8f));
+  
+  
+  // ===== RESET =====
+  textFont(createFont("Arial", inchToPix(.3f))); //sets the font to Arial that is 0.3" tall
+  // reset color
+  fill(255);
 }
