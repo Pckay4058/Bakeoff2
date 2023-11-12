@@ -413,7 +413,7 @@ void drawDial()
   //text("left", 830, 715);
   drawArrow(880, 715,20,180); // left
   stroke(255);
-  if (mousePressed && dist(880, 715, mouseX, mouseY)<inchToPix(.4f))
+  if (mousePressed && dist(880, 715, mouseX, mouseY)<inchToPix(.45f))
     logoX = logoX - inchToPix(.02f) * movementSpeed;
 
 
@@ -423,7 +423,7 @@ void drawDial()
   //text("right", width-inchToPix(.4f), 715);
   drawArrow(930, 715,20,0); //right
   stroke(255);
-  if (mousePressed && dist(930, 715, mouseX, mouseY)<inchToPix(.4f))
+  if (mousePressed && dist(930, 715, mouseX, mouseY)<inchToPix(.45f))
     logoX = logoX + inchToPix(.02f) * movementSpeed;
 
 
@@ -433,7 +433,7 @@ void drawDial()
   //text("UP", 905, 660);
   drawArrow(905, 690,20,270); //UP
   stroke(255);
-  if (mousePressed && dist(905, 690, mouseX, mouseY)<inchToPix(.4f))
+  if (mousePressed && dist(905, 690, mouseX, mouseY)<inchToPix(.45f))
     logoY = logoY - inchToPix(.02f) * movementSpeed;
 
 
@@ -443,7 +443,7 @@ void drawDial()
   //text("DOWN", 905, height-inchToPix(.4f));
   drawArrow(905, 740,20,90);//down
   stroke(255);
-  if (mousePressed && dist(905, 740, mouseX, mouseY)<inchToPix(.4f))
+  if (mousePressed && dist(905, 740, mouseX, mouseY)<inchToPix(.45f))
     logoY = logoY + inchToPix(.02f) * movementSpeed;
   
    
