@@ -125,8 +125,9 @@ void draw() {
 
   //===========DRAW EXAMPLE CONTROLS=================
   fill(255);
-  scaffoldControlLogic(); //you are going to want to replace this!
+  //scaffoldControlLogic(); //you are going to want to replace this!
   displayText();
+  drawDial();
 }
 
 
@@ -175,7 +176,67 @@ void scaffoldControlLogic()
    text("Enter", 905, 715);
 }
 
+void drawDial(){
+  //directional arrows dial
+  fill(167, 161, 161, 55);
+  circle(905, 715, 110); // main dial
+  
+  circle(830, 655, 60); //CCW circle
+  circle(width-30, 655, 60); //CW circle
+  circle(830, 765, 40); // - circle
+  circle(972, 765, 50); // + circle
+  
+  
+  stroke(240, 240, 240); //Color of arrows
+  drawArrow(905, 740,20,90);//down
+  if (mousePressed && dist(905, 740, mouseX, mouseY)<inchToPix(.4f))
+    logoY = logoY + inchToPix(.02f) * movementSpeed;
+    
+  drawArrow(880, 715,20,180); // left
+  if (mousePressed && dist(880, 715, mouseX, mouseY)<inchToPix(.4f))
+    logoX = logoX - inchToPix(.02f) * movementSpeed;
+  
+  drawArrow(905, 690,20,270); //UP
+  if (mousePressed && dist(905, 690, mouseX, mouseY)<inchToPix(.4f))
+    logoY = logoY - inchToPix(.02f) * movementSpeed;
+  
+  drawArrow(930, 715,20,0); //right
+  if (mousePressed && dist(930, 715, mouseX, mouseY)<inchToPix(.4f))
+    logoX = logoX + inchToPix(.02f) * movementSpeed;
+  
+  //Auxilary controls
+  fill(240, 240, 240);
+  text("CCW", 830, 660);
+  if (mousePressed && dist(830, 660, mouseX, mouseY)<inchToPix(.4f))
+    logoRotation = logoRotation - 1 * movementSpeed;
 
+  //upper right corner, rotate clockwise
+  text("CW", width-30, 660);
+  if (mousePressed && dist(width-30, 660, mouseX, mouseY)<inchToPix(.4f))
+    logoRotation = logoRotation + 1 * movementSpeed;
+
+  //lower left corner, decrease Z
+  text("-", 830, height-inchToPix(.4f));
+  if (mousePressed && dist(830, height-inchToPix(.4f), mouseX, mouseY)<inchToPix(.4f))
+    logoZ = constrain(logoZ-inchToPix(.02f) * movementSpeed, .01, inchToPix(4f)); //leave min and max alone!
+
+  //lower right corner, increase Z
+  text("+", width-inchToPix(.4f), height-inchToPix(.4f));
+  if (mousePressed && dist(width-inchToPix(.4f), height-inchToPix(.4f), mouseX, mouseY)<inchToPix(.4f))
+    logoZ = constrain(logoZ+inchToPix(.02f) * movementSpeed, .01, inchToPix(4f)); //leave min and max alone! 
+  
+  
+}
+
+void drawArrow(float cx, float cy, int len, float angle){
+  pushMatrix();
+  translate(cx, cy);
+  rotate(radians(angle));
+  line(0,0,len, 0);
+  line(len, 0, len - 8, -8);
+  line(len, 0, len - 8, 8);
+  popMatrix();
+}
 
 
 void mousePressed()
@@ -209,8 +270,8 @@ void mouseReleased()
   
   boolean check = false;
   //check to see if user clicked middle of screen within 3 inches, which this code uses as a submit button
-  if (dist(905, 715, mouseX, mouseY)<inchToPix(.5f))
-    check = true;
+  //if (dist(905, 715, mouseX, mouseY)<inchToPix(.5f))
+    //check = true;
   
   
   // check if clicked within the button
